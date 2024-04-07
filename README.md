@@ -6,8 +6,6 @@ And some other thing that i have created
 
 Check my profile for more information
 
-I'm Vietnamese also
-
 Discord:901D3#2183
 
 YouTube:
