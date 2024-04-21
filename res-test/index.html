@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pixel Creator</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .pixel {
+        width: 20px;
+        height: 20px;
+        border: 1px solid black;
+        display: inline-block;
+        text-align: center;
+        line-height: 20px;
+    }
+</style>
+</head>
+<body>
+
+<h1>Pixel Creator</h1>
+
+<p>Enter a number to create a grid of pixels with that number:</p>
+<input type="number" id="pixelNumber" min="1" max="9">
+<button onclick="createPixels()">Create Pixels</button>
+
+<div id="pixelGrid"></div>
+
+<script>
+function createPixels() {
+    var pixelNumber = parseInt(document.getElementById("pixelNumber").value);
+    var pixelGrid = document.getElementById("pixelGrid");
+    pixelGrid.innerHTML = "";
+    for (var i = 0; i < pixelNumber; i++) {
+        for (var j = 0; j < pixelNumber; j++) {
+            var pixel = document.createElement("div");
+            pixel.classList.add("pixel");
+            pixel.textContent = pixelNumber;
+            pixelGrid.appendChild(pixel);
+        }
+        pixelGrid.appendChild(document.createElement("br"));
+    }
+}
+</script>
+
+</body>
+</html>
