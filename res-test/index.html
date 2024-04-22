@@ -1,49 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pixel Creator</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-    }
-    .pixel {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://raw.githubusercontent.com/901D3/901D3.github.io/branchcuahuy/styles/style.css"
+    />
+
+    <link rel="stylesheet" href="https://901d3.glitch.me/styles/style.css" />
+    <title>Grid pixel generator</title>
+    <style>
+      .label {
+        font-family: UbuntuMonoBold;
+        font-size: 25px;
+      }
+      .pixel {
         width: 20px;
         height: 20px;
-        border: 1px solid black;
+        border: 1px solid white;
         display: inline-block;
-        text-align: center;
-        line-height: 20px;
-    }
-</style>
-</head>
-<body>
+        cursor: pointer;
+      }
+      .lit {
+        background-color: white;
+      }
+      #pixelGrid {
+        max-width: 100%;
+        word-wrap: break-word;
+        line-height: 0;
+      }
+      #settingsMenu {
+        position: left;
+        top: 20px;
+        right: 15px;
+        background-color: rgba(255, 255, 255, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body id="bgcolor">
+    <div id="settingsMenu">
+      <h6
+        style="font-size: 15px; text-align: left; font-family: UbuntuMonoBold"
+      >
+        Settings:<br />
+        Background color
+        <input
+          type="text"
+          id="bghexcolor"
+          style="font-size: 15px; font-family: UbuntuMonoBold"
+          placeholder="#"
+          maxlength="6"
+        />
+        <button
+          style="font-size: 15px; font-family: UbuntuBold"
+          onclick="changeBackgroundColor()"
+        >
+          Change bg color
+        </button>
+        <br />
+        Min width: 10px, max width: 3932160px, default width: 3840px<br />
+        Width:
+        <input
+          type="number"
+          id="sliderNumber"
+          min="5"
+          max="3932160"
+          value="3840"
+          style="width: 175px; font-size: 15px; font-family: UbuntuR"
+        />
+        px
+        <br />
+        <input
+          type="range"
+          min="10"
+          max="3932160"
+          value="3840"
+          class="slider"
+          style="width: 750px; height: 30%"
+          id="myRange"
+        />
+      </h6>
+      <script>
+        var slider = document.getElementById("myRange");
+        var body = document.body;
+        var sliderValue = document.getElementById("sliderValue");
 
-<h1>Pixel Creator</h1>
+        slider.oninput = function () {
+          var val = parseInt(this.value);
+          body.style.width = val + "px";
+          if (sliderNumber) {
+            sliderNumber.value = val;
+          }
+        };
 
-<p>Enter a number to create a grid of pixels with that number:</p>
-<input type="number" id="pixelNumber" min="1" max="9">
-<button onclick="createPixels()">Create Pixels</button>
+        var sliderNumber = null;
 
-<div id="pixelGrid"></div>
+        sliderNumber = document.getElementById("sliderNumber");
 
-<script>
-function createPixels() {
-    var pixelNumber = parseInt(document.getElementById("pixelNumber").value);
-    var pixelGrid = document.getElementById("pixelGrid");
-    pixelGrid.innerHTML = "";
-    for (var i = 0; i < pixelNumber; i++) {
-        for (var j = 0; j < pixelNumber; j++) {
+        sliderNumber.addEventListener("input", function () {
+          var val = parseInt(this.value);
+          if (
+            val >= parseInt(this.getAttribute("min")) &&
+            val <= parseInt(this.getAttribute("max"))
+          ) {
+            slider.value = val;
+            body.style.width = val + "px";
+            sliderValue.textContent = val + "px";
+          }
+        });
+
+        function changeRgbValue() {
+          var hexValue = "#" + document.getElementById("rgbInput").value;
+          var allPixels = document.querySelectorAll(".pixel");
+          for (var i = 0; i < allPixels.length; i++) {
+            allPixels[i].style.backgroundColor = hexValue;
+          }
+        }
+      </script>
+    </div>
+    <h1 style="font-size: 50px; font-family: UbuntuBold">
+      Grid pixel generator
+    </h1>
+
+    <div>
+      <label class="label" for="pixelSize">px size:</label>
+      <input
+        style="font-family: UbuntuMonoBold; font-size: 25px"
+        type="number"
+        id="pixelSize"
+        min="1"
+        max="100"
+        placeholder="20px"
+      />
+    </div>
+    <div>
+      <label class="label" for="pixelNumber">X Size:</label>
+      <input
+        style="font-family: UbuntuMonoBold; font-size: 25px"
+        type="number"
+        id="pixelX"
+        min="1"
+        max="100"
+        placeholder="px"
+      /><br />
+      <label class="label" for="pixelNumber">Y Size:</label>
+      <input
+        style="font-family: UbuntuMonoBold; font-size: 25px"
+        type="number"
+        id="pixelY"
+        min="1"
+        max="100"
+        placeholder="px"
+      />
+    </div>
+    <div>
+      <label
+        style="font-family: UbuntuMonoBold; font-size: 25px"
+        class="label"
+        for="rgbInput"
+        >RGB Value:</label
+      >
+      <input
+        style="font-family: UbuntuMonoBold; font-size: 25px"
+        type="text"
+        id="rgbInput"
+        placeholder="#"
+        maxlength="6"
+      />
+      <button
+        id="changergbValue"
+        style="font-size: 25px; font-family: UbuntuMonoBold"
+      >
+        Change RGB value</button
+      ><br />
+      <label class="label" for="gridOutlineColor">Grid outline color</label>
+      <input
+        type="text"
+        id="gridOutlineColor"
+        style="font-size: 25px; font-family: UbuntuMonoBold"
+        placeholder="#"
+        maxlength="6"
+      />
+      <button
+        style="font-size: 20px; font-family: UbuntuBold"
+        onclick="changeGridOutlineColor()"
+      >
+        Change outline color
+      </button>
+    </div>
+    <button
+      onclick="createPixels()"
+      style="font-size: 20px; font-family: UbuntuBold"
+    >
+      Create Pixels
+    </button>
+
+    <div id="pixelGrid"></div>
+
+    <script>
+      function createPixels() {
+        var pixelSize = parseInt(document.getElementById("pixelSize").value);
+        var pixelX = parseInt(document.getElementById("pixelX").value);
+        var pixelY = parseInt(document.getElementById("pixelY").value);
+        var pixelGrid = document.getElementById("pixelGrid");
+        pixelGrid.innerHTML = "";
+
+        for (var y = 0; y < pixelY; y++) {
+          for (var x = 0; x < pixelX; x++) {
             var pixel = document.createElement("div");
             pixel.classList.add("pixel");
-            pixel.textContent = pixelNumber;
+            pixel.style.width = pixelSize + "px";
+            pixel.style.height = pixelSize + "px";
+            pixel.textContent = "";
+            pixel.addEventListener("click", function () {
+              var hexValue = "#" + document.getElementById("rgbInput").value;
+              this.style.backgroundColor = hexValue;
+            });
             pixelGrid.appendChild(pixel);
+          }
+          pixelGrid.appendChild(document.createElement("br"));
         }
-        pixelGrid.appendChild(document.createElement("br"));
-    }
-}
-</script>
+      }
+    </script>
+    <script>
+      function changeBackgroundColor() {
+        var hexColor = "#" + document.getElementById("bghexcolor").value;
+        document.body.style.backgroundColor = hexColor;
+        localStorage.setItem("bgColor", hexColor);
+        if (isColorDark(hexColor)) {
+          document.body.style.color = "white";
+        } else {
+          document.body.style.color = "black";
+        }
+      }
 
-</body>
+      function isColorDark(color) {
+        var r = parseInt(color.substr(1, 2), 16);
+        var g = parseInt(color.substr(3, 2), 16);
+        var b = parseInt(color.substr(5, 2), 16);
+        var hsl = rgbToHsl(r, g, b);
+        return hsl[2] < 0.5;
+      }
+
+      function rgbToHsl(r, g, b) {
+        r /= 255;
+        g /= 255;
+        b /= 255;
+        var max = Math.max(r, g, b),
+          min = Math.min(r, g, b);
+        var h,
+          s,
+          l = (max + min) / 2;
+
+        if (max == min) {
+          h = s = 0;
+        } else {
+          var d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r:
+              h = (g - b) / d + (g < b ? 6 : 0);
+              break;
+            case g:
+              h = (b - r) / d + 2;
+              break;
+            case b:
+              h = (r - g) / d + 4;
+              break;
+          }
+          h /= 6;
+        }
+
+        return [h, s, l];
+      }
+
+      var storedColor = localStorage.getItem("bgColor");
+      if (storedColor) {
+        document.body.style.backgroundColor = storedColor;
+        document.getElementById("bghexcolor").value = storedColor.slice(1);
+        if (isColorDark(storedColor)) {
+          document.body.style.color = "white";
+        } else {
+          document.body.style.color = "black";
+        }
+      }
+
+      function changeGridOutlineColor() {
+        var hexColor = "#" + document.getElementById("gridOutlineColor").value;
+        var allPixels = document.querySelectorAll(".pixel");
+        for (var i = 0; i < allPixels.length; i++) {
+          allPixels[i].style.borderColor = hexColor;
+        }
+      }
+    </script>
+  </body>
 </html>
