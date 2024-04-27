@@ -28,6 +28,8 @@
         max-width: 100%;
         word-wrap: break-word;
         line-height: 0;
+        white-space:nowrap;
+        overflow-x: auto;
       }
       #settingsMenu {
         max-width: 750px;
@@ -50,8 +52,9 @@
         <input
           type="text"
           id="bghexcolor"
+          value="303030"
           style="font-size: 15px; font-family: UbuntuMonoBold"
-          placeholder="#"
+          placeholder="#RRGGBB"
           maxlength="6"
         />
         <button
@@ -66,7 +69,7 @@
           Change bg color
         </button>
         <br />
-        Min width: 10px, max width: 3932160px, default width: 8192px<br />
+        Min width: 10px, max width: 3932160px, default width: 3840px<br />
         Width:
         <input
           type="number"
@@ -74,9 +77,9 @@
           min="5"
           max="3932160"
           value="8192"
+               placeholder="px"
           style="width: 175px; font-size: 15px; font-family: UbuntuR"
         />
-        px
         <br />
         <input
           type="range"
@@ -130,7 +133,7 @@
         style="font-family: UbuntuMonoBold; font-size: 25px"
         type="number"
         id="pixelCreationInterval"
-        min="0"
+        min="1"
         placeholder="10ms"
       />
     </div>
@@ -152,13 +155,13 @@
       <button
         id="changergbValue"
         style="
-          font-size: 20px;
+          font-size: 25px;
           font-family: UbuntuMonoBold;
           border-radius: 12px;
         "
         onclick="changeRgbValue()"
       >
-        Change RGB value</button
+        Change color value</button
       ><br />
       <label
         style="font-family: UbuntuMonoBold; font-size: 25px"
@@ -229,14 +232,47 @@
         Apply spacing Y
       </button>
     </div>
-
+    <div>
+      <br />
+      <label class="label" for="pixelGridOverflowWidth"
+        >Grid field width:</label
+      >
+      <input
+        id="pixelGridOverflowWidth"
+        type="number"
+        style="font-size: 25px; font-family: UbuntuMonoBold"
+        placeholder="500px"
+      />
+      <button
+        onclick="applyPixelGridOverflowWidth()"
+        style="font-size: 20px; font-family: UbuntuBold; border-radius: 12px"
+      >
+        Apply grid field width
+      </button>
+      <br />
+      <label class="label" for="pixelGridOverflowHeight"
+        >Grid field height:</label
+      >
+      <input
+        id="pixelGridOverflowHeight"
+        type="number"
+        style="font-size: 25px; font-family: UbuntuMonoBold"
+        placeholder="500px"
+      />
+      <button
+        onclick="applyPixelGridOverflowHeight()"
+        style="font-size: 20px; font-family: UbuntuBold; border-radius: 12px"
+      >
+        Apply grid field height
+      </button>
+    </div>
     <button
       onclick="createPixels()"
       style="font-size: 20px; font-family: UbuntuBold; border-radius: 12px"
     >
-      Create Pixels
+      Generate grid
     </button>
-    <div id="pixelGrid">Grid pixel will display here</div>
+    <div id="pixelGrid" style="overflow; height: 500px;width: 500px"></div>
 
     <script>
       var slider = document.getElementById("myRange");
@@ -270,6 +306,30 @@
         body.style.width = storedWidth + "px";
         slider.value = storedWidth;
         sliderNumber.value = storedWidth;
+      }
+
+      function createPixels() {
+        var pixelSize = parseInt(document.getElementById("pixelSize").value);
+        var pixelX = parseInt(document.getElementById("pixelX").value);
+        var pixelY = parseInt(document.getElementById("pixelY").value);
+        var pixelGrid = document.getElementById("pixelGrid");
+        pixelGrid.innerHTML = "";
+
+        for (var y = 0; y < pixelY; y++) {
+          for (var x = 0; x < pixelX; x++) {
+            var pixel = document.createElement("div");
+            pixel.classList.add("pixel");
+            pixel.style.width = pixelSize + "px";
+            pixel.style.height = pixelSize + "px";
+            pixel.textContent = "";
+            pixel.addEventListener("click", function () {
+              var hexValue = "#" + document.getElementById("rgbInput").value;
+              this.style.backgroundColor = hexValue;
+            });
+            pixelGrid.appendChild(pixel);
+          }
+          pixelGrid.appendChild(document.createElement("br"));
+        }
       }
 
       function applyPixelSpacing(direction) {
@@ -349,39 +409,68 @@
     </script>
 
     <script>
-function createPixels() {
-  var pixelSize = parseInt(document.getElementById("pixelSize").value);
-  var pixelX = parseInt(document.getElementById("pixelX").value);
-  var pixelY = parseInt(document.getElementById("pixelY").value);
+      function createPixels() {
+        var pixelSize = parseInt(document.getElementById("pixelSize").value);
+        var pixelX = parseInt(document.getElementById("pixelX").value);
+        var pixelY = parseInt(document.getElementById("pixelY").value);
+        var pixelGrid = document.getElementById("pixelGrid");
+        pixelGrid.innerHTML = "";
+
+        var createRow = function (y) {
+          for (var x = 0; x < pixelX; x++) {
+            var pixel = document.createElement("div");
+            pixel.classList.add("pixel");
+            pixel.style.width = pixelSize + "px";
+            pixel.style.height = pixelSize + "px";
+            pixel.textContent = "";
+            pixel.addEventListener("click", function () {
+              var hexValue = "#" + document.getElementById("rgbInput").value;
+              this.style.backgroundColor = hexValue;
+            });
+            pixelGrid.appendChild(pixel);
+          }
+          pixelGrid.appendChild(document.createElement("br"));
+        };
+
+        var y = 0;
+        var intervalTime = parseInt(
+          document.getElementById("pixelCreationInterval").value
+        );
+        var createRowInterval = setInterval(function () {
+          createRow(y);
+          y++;
+          if (y >= pixelY) {
+            clearInterval(createRowInterval);
+          }
+        }, intervalTime);
+      }
+
+      function applyPixelSpacing(direction) {
+        var spacingInput = document.getElementById(`pixelSpacing${direction}`);
+        var spacingValue = spacingInput.value;
+        var allPixels = document.querySelectorAll(".pixel");
+        for (var i = 0; i < allPixels.length; i++) {
+          if (direction === "X") {
+            allPixels[i].style.marginRight = spacingValue + "px";
+          } else if (direction === "Y") {
+            allPixels[i].style.marginBottom = spacingValue + "px";
+          }
+        }
+      }
+function applyPixelGridOverflowWidth() {
+  var pixelGridOverflowWidthValue = parseInt(document.getElementById("pixelGridOverflowWidth").value);
   var pixelGrid = document.getElementById("pixelGrid");
-  pixelGrid.innerHTML = "";
-
-  var createRow = function(y) {
-    for (var x = 0; x < pixelX; x++) {
-      var pixel = document.createElement("div");
-      pixel.classList.add("pixel");
-      pixel.style.width = pixelSize + "px";
-      pixel.style.height = pixelSize + "px";
-      pixel.textContent = "";
-      pixel.addEventListener("click", function () {
-        var hexValue = "#" + document.getElementById("rgbInput").value;
-        this.style.backgroundColor = hexValue;
-      });
-      pixelGrid.appendChild(pixel);
-    }
-    pixelGrid.appendChild(document.createElement("br"));
-  };
-
-  var y = 0;
-  var intervalTime = parseInt(document.getElementById("pixelCreationInterval").value);
-  var createRowInterval = setInterval(function() {
-    createRow(y);
-    y++;
-    if (y >= pixelY) {
-      clearInterval(createRowInterval);
-    }
-  }, intervalTime);
+  pixelGrid.style.width = pixelGridOverflowWidthValue + "px";
+  pixelGrid.style.overflowX = "auto"; // Enable horizontal scrolling
 }
+
+      function applyPixelGridOverflowHeight() {
+        var pixelGridOverflowHeightValue = parseInt(
+          document.getElementById("pixelGridOverflowHeight").value
+        );
+        var pixelGrid = document.getElementById("pixelGrid");
+        pixelGrid.style.height = pixelGridOverflowHeightValue + "px";
+      }
 
       function changeRgbValue() {
         var hexValue = "#" + document.getElementById("rgbInput").value;
