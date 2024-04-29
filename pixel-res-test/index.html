@@ -21,6 +21,10 @@
         display: inline-block;
         cursor: pointer;
       }
+      .button {
+        font-family: UbuntuMonoBold;
+        font-size: 20px; 
+      }
       .lit {
         background-color: white;
       }
@@ -461,7 +465,7 @@ function applyPixelGridOverflowWidth() {
   var pixelGridOverflowWidthValue = parseInt(document.getElementById("pixelGridOverflowWidth").value);
   var pixelGrid = document.getElementById("pixelGrid");
   pixelGrid.style.width = pixelGridOverflowWidthValue + "px";
-  pixelGrid.style.overflowX = "auto"; // Enable horizontal scrolling
+  pixelGrid.style.overflowX = "auto";
 }
 
       function applyPixelGridOverflowHeight() {
